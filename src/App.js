@@ -1,7 +1,8 @@
 import React from "react";
-import { FreeCamera, Vector3, HemisphericLight, MeshBuilder, CSG , StandardMaterial, Mesh, Color3 } from "@babylonjs/core";
+import { SceneLoader, FreeCamera, Vector3, HemisphericLight, MeshBuilder, CSG , StandardMaterial, Mesh, Color3 } from "@babylonjs/core";
 import SceneComponent from "./babylon/SceneComponent";
 import { instructions } from "./instructions";
+import { doDownload } from "./util/util";
 import './App.css';
 
 let reactor;
@@ -24,12 +25,12 @@ function buildMesh(scene) {
   const { x1, x2, y1, y2, z1, z2 } = stepInstructions[0];
   
   let mat = new StandardMaterial("mat", scene);
-  mat.diffuseColor = new Color3(.3, .1, .95);
+  mat.diffuseColor = new Color3(.2, .15, .95);
 
   let a = MeshBuilder.CreateBox("a", { width: x2-x1, height: y2-y1, depth: z2-z1, updatable: true}, scene );
   a.position = new Vector3((x1+x2)/2, (y1+y2)/2, (z1+z2)/2);
 
-  for (let i = 1; i < 220; i++) {
+  for (let i = 1; i < stepInstructions.length; i++) {
     console.log(i);
     const {mode, x1, x2, y1, y2, z1, z2} = stepInstructions[i];
     const b = MeshBuilder.CreateBox("b", { width: x2-x1, height: y2-y1, depth: z2-z1}, scene);
@@ -47,9 +48,12 @@ function buildMesh(scene) {
     }
   }
   reactor = a;
+  reactor.name = 'reactor';
+  doDownload('reactor-mesh', reactor);
 }
 
 const onSceneReady = (scene) => {
+  scene.clearColor = Color3.Black();
   let camera = new FreeCamera("camera1", new Vector3(0, 50000, -320000), scene);
   camera.setTarget(Vector3.Zero());
   camera.minZ = 220000;
@@ -57,9 +61,24 @@ const onSceneReady = (scene) => {
   const canvas = scene.getEngine().getRenderingCanvas();
   camera.attachControl(canvas, true);
   let light = new HemisphericLight("light", new Vector3(1, 1, 1), scene);
-  light.intensity = 1;
+  light.intensity = 1.2;
 
-  buildMesh(scene);
+  // SceneLoader.ImportMest code below loads the reactor mesh quickly from a saved .babylon file.
+  // Uncomment the section to use the file found in /public/assets
+   
+  
+  SceneLoader.ImportMesh(null, "./assets/", "reactor-mesh.babylon", scene,
+                   function(meshes, particleSystems, skeletons){
+    reactor = meshes[0];
+  });
+  
+
+  // Code below creates a combined mesh file that can be saved from the browser.
+  // Place this file named reactor-mesh.babylon in /public/assets.
+  // To load mesh from the file, comment out buildMesh below and uncomment SceneLoader
+  // section above.
+
+  //buildMesh(scene);
 };
 
 const onRender = (scene) => {
