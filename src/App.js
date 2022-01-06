@@ -1,6 +1,5 @@
 import React from "react";
-import { SceneLoader, FreeCamera, Vector3, HemisphericLight, MeshBuilder, CSG , StandardMaterial, Mesh, Color3, Color4 } from "@babylonjs/core";
-import { AdvancedDynamicTexture, TextBlock } from '@babylonjs/gui/2D';
+import { SceneLoader, UniversalCamera, Vector3, HemisphericLight, MeshBuilder, CSG , StandardMaterial, Mesh, Color3, Color4 } from "@babylonjs/core";
 import SceneComponent from "./babylon/SceneComponent";
 import { instructions } from "./instructions";
 import { doDownload } from "./util/util";
@@ -55,14 +54,14 @@ function buildMesh(scene) {
 
 const onSceneReady = (scene) => {
   scene.clearColor = new Color4(0,0,0,0);
-  let camera = new FreeCamera("camera1", new Vector3(0, 0, -300000), scene);
+  let camera = new UniversalCamera("camera1", new Vector3(0, 50000, -320000), scene);
   camera.setTarget(Vector3.Zero());
   camera.minZ = 200000;
-  camera.maxZ = 400000;
-  const canvas = scene.getEngine().getRenderingCanvas();
-  camera.attachControl(canvas, true);
-  let light = new HemisphericLight("light", new Vector3(1, 1, 1), scene);
-  light.intensity = 1.2;
+  camera.maxZ = 440000;
+  let light1 = new HemisphericLight("light1", new Vector3(1, 0, 1), scene);
+  light1.intensity = .8;
+  let light2 = new HemisphericLight("light1", new Vector3(0, -1, 0), scene);
+  light2.intensity = .8;
 
   // SceneLoader.ImportMest code below loads the reactor mesh quickly from a saved .babylon file.
   // Uncomment the section to use the file found in /public/assets
@@ -94,7 +93,7 @@ const onRender = (scene) => {
 function App() {
   return (
   <div>
-    <h2 className="top-text">Advent of Code 2021 - Sub Reactor</h2>
+    <h3 className="top-text">Advent of Code 2021 - Sub Reactor</h3>
     <div id="app" className="my-canvas">
       <SceneComponent antialias onSceneReady={onSceneReady} onRender={onRender} id="my-canvas" />
     </div>

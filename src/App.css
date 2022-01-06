@@ -7,15 +7,23 @@ html,body {
 }
 
 canvas {
-    height: 100%;
     width: 100%;
     margin: 0;
     padding: 0;
+    position: absolute;
+    z-index: 10;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
 }
 
 .top-text {
-    color: #009900;
-    margin-top: 5%;
+    position: absolute;
+    z-index: 11;
+    margin-top: 2%;
+    width: 100%;
+    color: #483ed3;
+    background-color: black;
     text-align: center;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
