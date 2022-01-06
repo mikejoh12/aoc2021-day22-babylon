@@ -1,5 +1,6 @@
 import React from "react";
-import { SceneLoader, FreeCamera, Vector3, HemisphericLight, MeshBuilder, CSG , StandardMaterial, Mesh, Color3 } from "@babylonjs/core";
+import { SceneLoader, FreeCamera, Vector3, HemisphericLight, MeshBuilder, CSG , StandardMaterial, Mesh, Color3, Color4 } from "@babylonjs/core";
+import { AdvancedDynamicTexture, TextBlock } from '@babylonjs/gui/2D';
 import SceneComponent from "./babylon/SceneComponent";
 import { instructions } from "./instructions";
 import { doDownload } from "./util/util";
@@ -53,11 +54,11 @@ function buildMesh(scene) {
 }
 
 const onSceneReady = (scene) => {
-  scene.clearColor = Color3.Black();
-  let camera = new FreeCamera("camera1", new Vector3(0, 50000, -320000), scene);
+  scene.clearColor = new Color4(0,0,0,0);
+  let camera = new FreeCamera("camera1", new Vector3(0, 0, -300000), scene);
   camera.setTarget(Vector3.Zero());
-  camera.minZ = 220000;
-  camera.maxZ = 420000;
+  camera.minZ = 200000;
+  camera.maxZ = 400000;
   const canvas = scene.getEngine().getRenderingCanvas();
   camera.attachControl(canvas, true);
   let light = new HemisphericLight("light", new Vector3(1, 1, 1), scene);
@@ -65,11 +66,10 @@ const onSceneReady = (scene) => {
 
   // SceneLoader.ImportMest code below loads the reactor mesh quickly from a saved .babylon file.
   // Uncomment the section to use the file found in /public/assets
-   
   
-  SceneLoader.ImportMesh(null, "./assets/", "reactor-mesh.babylon", scene,
-                   function(meshes, particleSystems, skeletons){
-    reactor = meshes[0];
+  SceneLoader.Append("./assets/", "reactor-mesh.babylon", scene,
+                   function(scene){
+    reactor = scene.meshes[0];
   });
   
 
@@ -93,8 +93,11 @@ const onRender = (scene) => {
 
 function App() {
   return (
-  <div id="app">
-    <SceneComponent antialias onSceneReady={onSceneReady} onRender={onRender} id="my-canvas" />
+  <div>
+    <h2 className="top-text">Advent of Code 2021 - Sub Reactor</h2>
+    <div id="app" className="my-canvas">
+      <SceneComponent antialias onSceneReady={onSceneReady} onRender={onRender} id="my-canvas" />
+    </div>
   </div>
   )};
 
